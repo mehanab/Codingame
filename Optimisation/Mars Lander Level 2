@@ -1,0 +1,104 @@
+<?php
+/**
+ * Save the Planet.
+ * Use less Fossil Fuel.
+ **/
+
+// $N: the number of points used to draw the surface of Mars.
+fscanf(STDIN, "%d", $N);
+
+$lands = [];
+for ($i = 0; $i < $N; $i++)
+{
+    // $landX: X coordinate of a surface point. (0 to 6999)
+    // $landY: Y coordinate of a surface point. By linking all the points together in a sequential fashion, you form the surface of Mars.
+    fscanf(STDIN, "%d %d", $landX, $landY);
+    $lands[$i]["x"] = $landX;
+    $lands[$i]["y"] = $landY;
+}
+
+
+$land_x_1 = 0;
+$land_x_2 = 0;
+$land_y = 0;
+foreach($lands as $k => $land)
+{
+    if(array_key_exists($k+1, $lands) && $land["y"] == $lands[$k+1]["y"])
+    {
+        $land_x_1 = $land["x"];
+        $land_x_2 = $lands[$k+1]["x"];
+        $land_y = $land["y"];   
+    } 
+}
+
+$x_arrival = ($land_x_1 + $land_x_2) / 2;
+$x_arrival_length = $land_x_2 - $land_x_1;
+
+// game loop
+
+while (TRUE)
+{
+    
+    // $HS: the horizontal speed (in m/s), can be negative.
+    // $VS: the vertical speed (in m/s), can be negative.
+    // $F: the quantity of remaining fuel in liters.
+    // $R: the rotation angle in degrees (-90 to 90).
+    // $P: the thrust power (0 to 4).
+    fscanf(STDIN, "%d %d %d %d %d %d %d", $X, $Y, $HS, $VS, $F, $R, $P);
+
+    if(abs($x_arrival - $X) > 1000) 
+    {
+        if (($x_arrival - $X) > 0) 
+        {
+            if ($HS > 55)  
+                echo("20 4\n");
+            
+            else 
+                echo("-20 4\n");
+        
+        } 
+        else if (($x_arrival - $X) < 0) 
+        {
+            if ($HS < -55 && ($Y - $land_y) > 1000) 
+            {
+                echo("-20 4\n");
+            } 
+            else if($HS < -55 && ($Y - $land_y) < 1000)
+            {
+                if($Y < 3000-300)
+                    echo("0 4\n");
+                else
+                    echo("0 2\n");
+            }
+            else 
+            {
+                echo("20 4\n");
+            }
+        }
+    }
+    else
+    {
+        if ($HS > 15)   
+            echo("55 4\n");
+
+        else if ($HS < -15) 
+            echo("-55 4\n");
+
+        else 
+        {
+            if ($VS < -35) 
+            {
+                if($X+500 < $x_arrival)
+                    echo("-35 4\n");
+
+                else
+                    echo("0 4\n");
+            } 
+            else 
+            {
+                echo("0 2\n");
+            }
+        }
+    }
+}
+?>
