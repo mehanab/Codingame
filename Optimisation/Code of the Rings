@@ -1,0 +1,101 @@
+<?php
+/**
+ * Auto-generated code below aims at helping you parse
+ * the standard input according to the problem statement.
+ **/
+
+$magicPhrase = stream_get_line(STDIN, 500 + 1, "\n");
+
+$alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+$arr_alph = str_split($alph);
+$arr_magic = str_split($magicPhrase);
+$result ="";
+$last = -2;
+foreach($arr_magic as $k => $magic_lettre)
+{
+    $find = array_search($magic_lettre, $arr_alph, true);
+
+    if($find !== false)
+    {   
+        if($find != $last)
+        {
+            if ($last == -2)
+            {
+                if($find > 0)
+                {
+                    if($find < 26-$find)
+                    {
+                        $index = $find;
+                        $chr = "+";
+                    }
+                    else
+                    {
+                        $index = (26-$find) -1;
+                        $chr = "-";
+                    }
+                    
+                    for($n = 0; $n <= $index; $n++)
+                    {
+                        $result .=$chr;
+                    }
+                    $result .=".";
+                }
+                else
+                {
+                    $result .="+.";
+                }
+            }
+            else 
+            {
+                if($find === 26)
+                {
+                    $result .= ">.<";
+                }
+                else
+                {
+                    $chr = "";
+                    $index = 0;
+                    if(abs($find-$last)-1 < abs($last + (26-$find)))
+                    {
+                        if($find > $last)
+                            $chr ="+";
+                
+                        else if($last > $find)
+                            $chr ="-";
+                        
+                        $index = abs($find-$last)-1;
+                    }
+                    else
+                    {
+                        if($last > $find)
+                            $chr = "+";
+                        else if($last < $find)
+                            $chr = "-";
+
+                        $index = abs($last + (26-$find));
+                    }
+                    
+                    for($n = 0; $n <= $index; $n++)
+                    {
+                        $result .= $chr;
+                    }
+                    
+                    $result .=".";
+                }
+            }
+
+            $last = $find != 26 ? $find: $last;
+           
+        }
+        else
+        {
+            $result .= ".";
+        }
+
+    }
+}
+// Write an action using echo(). DON'T FORGET THE TRAILING \n
+// To debug: error_log(var_export($var, true)); (equivalent to var_dump)
+
+echo("$result\n");
+?>
